@@ -22,7 +22,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
+//le dernier middleware n'a pas de next car il n'y a pas de fonction suivante
+app.use((req, res) => {
     console.log('Réponse envoyée avec succès !');
 });
 
