@@ -1,8 +1,11 @@
 // Importation express
 const express = require('express');
 
-// Création de l'application express
+// Création de l'application express 
 const app = express();
+
+// Middleware qui intercepte les requettes qui contiennent du JSON et envoyé à req.body (fait avant avec body-parser)
+app.use(express.json());
 
 // // next renvoie à la prochaine fonction
 // app.use((req, res, next) => {
@@ -35,8 +38,16 @@ app.use((req, res, next) => {
     next();
 });
 
+//création d'un middleware avec un endpoint pour créer une route POST
+app.post('/api/stuff', (req, res, next) => {
+    console.log(req.body); //accès possible grâce au middleware express.json()
+    res.status(201).json({
+        message: 'Objet créé !'
+    });
+});
+
 //création d'un middleware avec un endpoint pour créer une route GET
-app.use('/api/stuff', (req, res, next) => {
+app.get('/api/stuff', (req, res, next) => {
     const stuff = [
         {
             _id: 'oeihfzeoi',
