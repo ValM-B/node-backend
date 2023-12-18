@@ -27,13 +27,22 @@ const app = express();
 //     console.log('Réponse envoyée avec succès !');
 // });
 
+//pas de endpoint car on veut que ce middleware soit exécuté pour toutes les requêtes
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // accès à l'API depuis n'importe quelle origine
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // ajout des headers mentionnés aux requêtes envoyées vers l'API
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // envoi des requêtes avec les méthodes mentionnées
+    next();
+});
+
+//création d'un middleware avec un endpoint pour créer une route GET
 app.use('/api/stuff', (req, res, next) => {
     const stuff = [
         {
             _id: 'oeihfzeoi',
             title: 'Mon premier objet',
             description: 'Les infos de mon premier objet',
-            imageUrl: '',
+            imageUrl: 'https://cdn.pixabay.com/photo/2014/11/22/00/51/camera-541213_1280.jpg',
             price: 4900, // prix en centimes pour ne pas utiliser les nombres à virgule
             userId: 'qsomihvqios',
         },
@@ -41,7 +50,7 @@ app.use('/api/stuff', (req, res, next) => {
             _id: 'oeihfzeomoihi',
             title: 'Mon deuxième objet',
             description: 'Les infos de mon deuxième objet',
-            imageUrl: '',
+            imageUrl: 'https://cdn.pixabay.com/photo/2014/11/22/00/51/camera-541213_1280.jpg',
             price: 2900,
             userId: 'qsomihvqios',
         },
