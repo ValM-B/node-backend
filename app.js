@@ -1,9 +1,22 @@
 // Importation express
 const express = require('express');
+const mongoose = require('mongoose');
+
+const Thing = require('./models/Thing');
 
 // Création de l'application express 
-const app = express();
 
+
+// Importation de mongoose
+mongoose.connect('mongodb+srv://valmb_33:ktsEO5l0wWB40uym@cluster0.pfwvwbh.mongodb.net/?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+const app = express();    
 // Middleware qui intercepte les requettes qui contiennent du JSON et envoyé à req.body (fait avant avec body-parser)
 app.use(express.json());
 
@@ -40,10 +53,13 @@ app.use((req, res, next) => {
 
 //création d'un middleware avec un endpoint pour créer une route POST
 app.post('/api/stuff', (req, res, next) => {
-    console.log(req.body); //accès possible grâce au middleware express.json()
-    res.status(201).json({
-        message: 'Objet créé !'
+    delete req.body._id;
+    const thing = new Thing({
+      ...req.body
     });
+    thing.save()
+      .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+      .catch(error => res.status(400).json({ error }));
 });
 
 //création d'un middleware avec un endpoint pour créer une route GET
