@@ -62,27 +62,34 @@ app.post('/api/stuff', (req, res, next) => {
       .catch(error => res.status(400).json({ error }));
 });
 
+//création d'un middleware avec un endpoint pour créer une route PUT
+app.put('/api/stuff/:id', (req, res, next) => {
+    Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+//création d'un middleware avec un endpoint pour créer une route DELETE
+app.delete('/api/stuff/:id', (req, res, next) => {
+    Thing.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+//création d'un middleware avec un endpoint pour créer une route GEt pour récupérer un seul objet selon son id
+app.get('/api/stuff/:id', (req, res, next) => {
+    Thing.findOne({ _id: req.params.id })
+    .then(thing => res.status(200).json(thing))
+    .catch(error => res.status(404).json({ error }));
+});
+
 //création d'un middleware avec un endpoint pour créer une route GET
 app.get('/api/stuff', (req, res, next) => {
-    const stuff = [
-        {
-            _id: 'oeihfzeoi',
-            title: 'Mon premier objet',
-            description: 'Les infos de mon premier objet',
-            imageUrl: 'https://cdn.pixabay.com/photo/2014/11/22/00/51/camera-541213_1280.jpg',
-            price: 4900, // prix en centimes pour ne pas utiliser les nombres à virgule
-            userId: 'qsomihvqios',
-        },
-        {
-            _id: 'oeihfzeomoihi',
-            title: 'Mon deuxième objet',
-            description: 'Les infos de mon deuxième objet',
-            imageUrl: 'https://cdn.pixabay.com/photo/2014/11/22/00/51/camera-541213_1280.jpg',
-            price: 2900,
-            userId: 'qsomihvqios',
-        },
-    ];
-    res.status(200).json(stuff); // renvoie le tableau stuff avec le code 200
+    Thing.find()
+        .then(things => res.status(200).json(things))
+        .catch(error => res.status(400).json({ error }));
 });
+
+
 // Exportation de l'application pour y accéder depuis les autres fichiers du projet (notemment le serveur node)
 module.exports = app;
